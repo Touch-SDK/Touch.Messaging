@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Touch.Queue.Aws</id>
+        <version>1.0.0</version>
+        <authors>Artem Abashev</authors>
+        <projectUrl>https://github.com/Touch-SDK/Touch.Messaging</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Amazon SQS-based queues for Touch SDK.</description>
+        <dependencies>
+            <dependency id="Touch" version="1.0.0" />
+            <dependency id="AWSSDK" version="2.1.4.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Release\Touch.Queue.Aws.dll" target="lib\Touch.Queue.Aws.dll" />
+        <file src="bin\Release\Touch.Queue.Aws.pdb" target="lib\Touch.Queue.Aws.pdb" />
+    </files>
+</package>
