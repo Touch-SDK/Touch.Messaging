@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Touch.Messaging.Sns</id>
+        <version>1.0.0</version>
+        <authors>Artem Abashev</authors>
+        <projectUrl>https://github.com/Touch-SDK/Touch.Messaging</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Amazon SNS-based push notification support for Touch SDK.</description>
+        <dependencies>
+            <dependency id="Touch" version="1.0.5" />
+            <dependency id="AWSSDK" version="2.1.5.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Release\Touch.Messaging.Sns.dll" target="lib\Touch.Messaging.Sns.dll" />
+        <file src="bin\Release\Touch.Messaging.Sns.pdb" target="lib\Touch.Messaging.Sns.pdb" />
+    </files>
+</package>

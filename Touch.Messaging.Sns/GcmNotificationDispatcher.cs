@@ -6,10 +6,10 @@ using Touch.Serialization;
 
 namespace Touch.Messaging
 {
-    public sealed class ApnsNotificationDispatcher : AbstractNotificationBroadcaster
+    public sealed class GcmNotificationDispatcher : AbstractNotificationBroadcaster
     {
         #region .ctor
-        public ApnsNotificationDispatcher(ISerializer jsonSerializer, AWSCredentials credentials, RegionEndpoint region, string applicationArn)
+        public GcmNotificationDispatcher(ISerializer jsonSerializer, AWSCredentials credentials, RegionEndpoint region, string applicationArn)
             : base(credentials, region, applicationArn)
         {
             if (jsonSerializer == null) throw new ArgumentNullException("jsonSerializer");
@@ -22,22 +22,19 @@ namespace Touch.Messaging
         #region INotificationDispatcher members
         public override void Dispatch(string deviceToken, string message, int count = 0, string data = null)
         {
-            var payload = new ApnsPayload { Alert = message, Badge = count, Sound = "default" };
+            var payload = new GcmPayload { Text = message, Badge = count };
             Broadcats(_jsonSerializer.Serialize(payload), deviceToken);
         }
         #endregion
     }
 
     [DataContract]
-    internal class ApnsPayload
+    internal class GcmPayload
     {
-        [DataMember(Name = "alert")]
-        public string Alert;
+        [DataMember(Name = "text")]
+        public string Text;
 
         [DataMember(Name = "badge")]
         public int Badge;
-
-        [DataMember(Name = "sound")]
-        public string Sound;
     }
 }
