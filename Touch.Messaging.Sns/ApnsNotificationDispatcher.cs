@@ -9,8 +9,8 @@ namespace Touch.Messaging
     public sealed class ApnsNotificationDispatcher : AbstractNotificationBroadcaster
     {
         #region .ctor
-        public ApnsNotificationDispatcher(ISerializer jsonSerializer, AWSCredentials credentials, RegionEndpoint region, string applicationArn)
-            : base(credentials, region, applicationArn)
+        public ApnsNotificationDispatcher(ISerializer jsonSerializer, AWSCredentials credentials, string connectionString)
+            : base(credentials, connectionString)
         {
             if (jsonSerializer == null) throw new ArgumentNullException("jsonSerializer");
             _jsonSerializer = jsonSerializer;
@@ -22,14 +22,22 @@ namespace Touch.Messaging
         #region INotificationDispatcher members
         public override void Dispatch(string deviceToken, string message, int count = 0, string data = null)
         {
-            var payload = new ApnsPayload { Alert = message, Badge = count, Sound = "default" };
-            Broadcats(_jsonSerializer.Serialize(payload), deviceToken);
+            var payload = _jsonSerializer.Serialize(new ApnsPayload { Body = new ApnsPayloadBody { Alert = message, Badge = count, Sound = "default" }});
+            var snsPayload = Config.IsSandbox ? new SnsPayload { ApnsSandbox = payload } : new SnsPayload { Apns = payload };
+            Broadcats(_jsonSerializer.Serialize(snsPayload), deviceToken);
         }
         #endregion
     }
 
     [DataContract]
     internal class ApnsPayload
+    {
+        [DataMember(Name = "aps")]
+        public ApnsPayloadBody Body;
+    }
+
+    [DataContract]
+    internal class ApnsPayloadBody
     {
         [DataMember(Name = "alert")]
         public string Alert;

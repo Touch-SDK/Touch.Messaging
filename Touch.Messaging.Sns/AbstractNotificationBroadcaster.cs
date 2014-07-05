@@ -5,76 +5,82 @@ using System.Text;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.Runtime;
+using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using Touch.Notification;
 
 namespace Touch.Messaging
 {
-    public abstract class AbstractNotificationBroadcaster : INotificationDispatcher
+    public abstract class AbstractNotificationBroadcaster : INotificationDispatcher, IDisposable
     {
         #region .ctor
-        protected AbstractNotificationBroadcaster(AWSCredentials credentials, RegionEndpoint region, string applicationArn)
+        protected AbstractNotificationBroadcaster(AWSCredentials credentials, string connectionString)
         {
             if (credentials == null) throw new ArgumentException("credentials");
-            _credentials = credentials;
 
-            if (region == null) throw new ArgumentException("region");
-            _region = region;
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentException("connectionString");
+            Config = new SnsConnectionStringBuilder { ConnectionString = connectionString };
+            if (string.IsNullOrWhiteSpace(Config.Application)) throw new ArgumentException("Application ARN is not set.", "connectionString");
 
-            if (string.IsNullOrEmpty(applicationArn)) throw new ArgumentException("applicationArn");
-            _applicationArn = applicationArn;
+            _client = AWSClientFactory.CreateAmazonSimpleNotificationServiceClient(credentials, Config.Region);
         }
         #endregion
 
         #region Data
-        private readonly AWSCredentials _credentials;
-        private readonly RegionEndpoint _region;
-        private readonly string _applicationArn;
+        protected readonly SnsConnectionStringBuilder Config;
 
         private readonly object _lock = new object();
-        private readonly Dictionary<string,string> _arnMap = new Dictionary<string, string>(); 
+        private readonly Dictionary<string,string> _arnMap = new Dictionary<string, string>();
+
+        private readonly IAmazonSimpleNotificationService _client;
         #endregion
 
         public abstract void Dispatch(string deviceToken, string message, int count = 0, string data = null);
 
         protected void Broadcats(string message, string deviceToken)
         {
-            using (var client = AWSClientFactory.CreateAmazonSimpleNotificationServiceClient(_credentials, _region))
+            string endpointArn = null;
+
+            lock (_lock)
             {
-                string endpointArn = null;
+                _arnMap.Clear();
 
-                lock (_lock)
+                if (!_arnMap.ContainsKey(deviceToken))
                 {
-                    if (!_arnMap.ContainsKey(deviceToken))
+                    var response = _client.ListEndpointsByPlatformApplication(new ListEndpointsByPlatformApplicationRequest
                     {
-                        var response = client.ListEndpointsByPlatformApplication(new ListEndpointsByPlatformApplicationRequest
-                        {
-                            PlatformApplicationArn = _applicationArn
-                        });
+                        PlatformApplicationArn = Config.Application
+                    });
 
-                        foreach (var endpoint in response.Endpoints)
-                            _arnMap.Add(endpoint.Attributes["Token"], endpoint.EndpointArn);
-                    }
-
-                    if (!_arnMap.ContainsKey(deviceToken))
-                    {
-                        var response = client.CreatePlatformEndpoint(new CreatePlatformEndpointRequest
-                        {
-                            PlatformApplicationArn = _applicationArn,
-                            Token = deviceToken
-                        });
-
-                        endpointArn = response.EndpointArn;
-                        _arnMap.Add(deviceToken, endpointArn);
-                    }
+                    foreach (var endpoint in response.Endpoints)
+                        _arnMap.Add(endpoint.Attributes["Token"], endpoint.EndpointArn);
                 }
 
-                client.Publish(new PublishRequest
+                if (!_arnMap.ContainsKey(deviceToken))
                 {
-                    Message = message,
-                    TargetArn = endpointArn
-                });
+                    var response = _client.CreatePlatformEndpoint(new CreatePlatformEndpointRequest
+                    {
+                        PlatformApplicationArn = Config.Application,
+                        Token = deviceToken
+                    });
+
+                    _arnMap[deviceToken] = response.EndpointArn;
+                }
+
+                endpointArn = _arnMap[deviceToken];
             }
+
+            _client.Publish(new PublishRequest
+            {
+                Message = message,
+                MessageStructure = "json",
+                TargetArn = endpointArn
+            });
+        }
+
+        public void Dispose()
+        {
+            _client.Dispose();
         }
     }
 }

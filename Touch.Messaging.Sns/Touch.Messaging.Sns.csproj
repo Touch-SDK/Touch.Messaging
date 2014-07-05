@@ -50,6 +50,8 @@
     <Compile Include="GcmNotificationDispatcher.cs" />
     <Compile Include="ApnsNotificationDispatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SnsConnectionStringBuilder.cs" />
+    <Compile Include="SnsPayload.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
