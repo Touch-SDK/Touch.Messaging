@@ -53,7 +53,7 @@ namespace Touch.Messaging
                     });
 
                     foreach (var endpoint in response.Endpoints)
-                        _arnMap.Add(endpoint.Attributes["Token"], endpoint.EndpointArn);
+                        _arnMap[endpoint.Attributes["Token"]] = endpoint.EndpointArn;
                 }
 
                 if (!_arnMap.ContainsKey(deviceToken))
