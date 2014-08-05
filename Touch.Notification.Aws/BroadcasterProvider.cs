@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Configuration;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.SimpleNotificationService;
@@ -30,9 +31,9 @@ namespace Touch.Notification
         #endregion;
 
         #region IBroadcasterProvider implementation
-        private IAmazonSimpleNotificationService ClientFactory()
+        private IAmazonSimpleNotificationService ClientFactory(RegionEndpoint region)
         {
-            return AWSClientFactory.CreateAmazonSimpleNotificationServiceClient(_credentials);
+            return AWSClientFactory.CreateAmazonSimpleNotificationServiceClient(_credentials, region);
         }
 
         public INotificationBroadcaster<T> GetBroadcaster<T>(string topicName) 
@@ -44,7 +45,17 @@ namespace Touch.Notification
 
             if (!_broadcasters.TryGetValue(topicName, out broadcaster))
             {
-                broadcaster = new NotificationBroadcaster<T>(_serializer, ClientFactory, topicName);
+                var connectionString = ConfigurationManager.ConnectionStrings[topicName];
+
+                if (connectionString == null || string.IsNullOrWhiteSpace(connectionString.ConnectionString))
+                    throw new ConfigurationErrorsException("Connection string '" + topicName + "' is not set.");
+
+                var builder = new BroadcasterConnectionStringBuilder
+                {
+                    ConnectionString = connectionString.ConnectionString
+                };
+
+                broadcaster = new NotificationBroadcaster<T>(_serializer, ClientFactory, builder);
                 _broadcasters[topicName] = broadcaster;
             }
 

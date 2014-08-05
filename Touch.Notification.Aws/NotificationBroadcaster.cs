@@ -1,7 +1,7 @@
 ﻿using System;
+using Amazon;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
-using Amazon.SimpleNotificationService;
 using Touch.Serialization;
 
 namespace Touch.Notification
@@ -19,8 +19,8 @@ namespace Touch.Notification
         /// </summary>
         /// <param name="serializer">Notification message serializer.</param>
         /// <param name="clientFactory">Notification client factory.</param>
-        /// <param name="notificationTopic">Notification topic name.</param>
-        internal NotificationBroadcaster(ISerializer serializer, Func<IAmazonSimpleNotificationService> clientFactory, string notificationTopic)
+        /// <param name="connectionString">Connection string.</param>
+        internal NotificationBroadcaster(ISerializer serializer, Func<RegionEndpoint, IAmazonSimpleNotificationService> clientFactory, BroadcasterConnectionStringBuilder connectionString)
         {
             if (serializer == null) throw new ArgumentNullException("serializer");
             _serializer = serializer;
@@ -28,15 +28,15 @@ namespace Touch.Notification
             if (clientFactory == null) throw new ArgumentNullException("clientFactory");
             _clientFactory = clientFactory;
 
-            if (string.IsNullOrEmpty(notificationTopic)) throw new ArgumentException("notificationTopic");
-            _notificationTopic = notificationTopic;
+            if (connectionString == null) throw new ArgumentNullException("connectionString");
+            _connectionString = connectionString;
         }
         #endregion
 
         #region Data
         private readonly ISerializer _serializer;
-        private readonly Func<IAmazonSimpleNotificationService> _clientFactory;
-        private readonly string _notificationTopic;
+        private readonly Func<RegionEndpoint, IAmazonSimpleNotificationService> _clientFactory;
+        private readonly BroadcasterConnectionStringBuilder _connectionString;
         #endregion;
 
         #region INotificationBroadcaster implementation
@@ -46,11 +46,11 @@ namespace Touch.Notification
 
             var messageBody = _serializer.Serialize(notification);
 
-            using (var client = _clientFactory.Invoke())
+            using (var client = _clientFactory(_connectionString.Region))
             {
                 var request = new PublishRequest
                 {
-                    TopicArn = _notificationTopic,
+                    TopicArn = _connectionString.TopicArn,
                     Message = messageBody
                 };
 
