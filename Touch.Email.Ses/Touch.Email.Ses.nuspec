@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Touch.Email.Ses</id>
+        <version>1.0.0</version>
+        <authors>Artem Abashev</authors>
+        <projectUrl>https://github.com/Touch-SDK/Touch.Service</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>AWS SES based e-mail sender for Touch SDK.</description>
+        <dependencies>
+            <dependency id="AWSSDK" version="2.2.4.0" />
+            <dependency id="Touch" version="1.0.11" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Release\Touch.Email.Ses.dll" target="lib\Touch.Email.Ses.dll" />
+        <file src="bin\Release\Touch.Email.Ses.pdb" target="lib\Touch.Email.Ses.pdb" />
+    </files>
+</package>
