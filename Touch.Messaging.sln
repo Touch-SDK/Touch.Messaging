@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Queue.Aws", "Touch.Qu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Messaging.Sns", "Touch.Messaging.Sns\Touch.Messaging.Sns.csproj", "{E207DAC7-A828-4F2B-9DB7-9D019A2343D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Email.Ses", "Touch.Email.Ses\Touch.Email.Ses.csproj", "{7C33373E-6FAA-456B-A0FB-EAF04D799EAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{E207DAC7-A828-4F2B-9DB7-9D019A2343D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E207DAC7-A828-4F2B-9DB7-9D019A2343D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E207DAC7-A828-4F2B-9DB7-9D019A2343D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C33373E-6FAA-456B-A0FB-EAF04D799EAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C33373E-6FAA-456B-A0FB-EAF04D799EAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C33373E-6FAA-456B-A0FB-EAF04D799EAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C33373E-6FAA-456B-A0FB-EAF04D799EAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
