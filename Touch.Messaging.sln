@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Messaging.PushSharp", "Touch.Messaging.PushSharp\Touch.Messaging.PushSharp.csproj", "{65359F18-2C6B-4F77-8317-626367C165D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Notification.Aws", "Touch.Notification.Aws\Touch.Notification.Aws.csproj", "{93E883FB-737F-4198-8B93-5EE6586AA629}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Queue.Aws", "Touch.Queue.Aws\Touch.Queue.Aws.csproj", "{248D6EF4-FB34-43BE-9F2A-5BF746F5DEAB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Messaging.Sns", "Touch.Messaging.Sns\Touch.Messaging.Sns.csproj", "{E207DAC7-A828-4F2B-9DB7-9D019A2343D3}"
@@ -23,10 +21,6 @@ Global
 		{65359F18-2C6B-4F77-8317-626367C165D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65359F18-2C6B-4F77-8317-626367C165D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65359F18-2C6B-4F77-8317-626367C165D4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93E883FB-737F-4198-8B93-5EE6586AA629}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93E883FB-737F-4198-8B93-5EE6586AA629}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93E883FB-737F-4198-8B93-5EE6586AA629}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93E883FB-737F-4198-8B93-5EE6586AA629}.Release|Any CPU.Build.0 = Release|Any CPU
 		{248D6EF4-FB34-43BE-9F2A-5BF746F5DEAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{248D6EF4-FB34-43BE-9F2A-5BF746F5DEAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{248D6EF4-FB34-43BE-9F2A-5BF746F5DEAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
