@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Messaging.PushSharp",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Queue.Aws", "Touch.Queue.Aws\Touch.Queue.Aws.csproj", "{248D6EF4-FB34-43BE-9F2A-5BF746F5DEAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Messaging.Sns", "Touch.Messaging.Sns\Touch.Messaging.Sns.csproj", "{E207DAC7-A828-4F2B-9DB7-9D019A2343D3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Email.Ses", "Touch.Email.Ses\Touch.Email.Ses.csproj", "{7C33373E-6FAA-456B-A0FB-EAF04D799EAB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Notification.Sns", "Touch.Notification.Sns\Touch.Notification.Sns.csproj", "{8E6295C5-DAB9-4BD1-830B-E40D305F3A20}"
@@ -27,10 +25,6 @@ Global
 		{248D6EF4-FB34-43BE-9F2A-5BF746F5DEAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{248D6EF4-FB34-43BE-9F2A-5BF746F5DEAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{248D6EF4-FB34-43BE-9F2A-5BF746F5DEAB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E207DAC7-A828-4F2B-9DB7-9D019A2343D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E207DAC7-A828-4F2B-9DB7-9D019A2343D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E207DAC7-A828-4F2B-9DB7-9D019A2343D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E207DAC7-A828-4F2B-9DB7-9D019A2343D3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7C33373E-6FAA-456B-A0FB-EAF04D799EAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7C33373E-6FAA-456B-A0FB-EAF04D799EAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C33373E-6FAA-456B-A0FB-EAF04D799EAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
