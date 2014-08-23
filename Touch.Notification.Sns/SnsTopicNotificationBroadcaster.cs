@@ -6,11 +6,11 @@ using Touch.Serialization;
 
 namespace Touch.Notification
 {
-    public class SnsNotificationBroadcaster<T> : INotificationBroadcaster<T>
+    public class SnsTopicNotificationBroadcaster<T> : INotificationBroadcaster<T>
         where T : class, new()
     {
         #region .ctor
-        public SnsNotificationBroadcaster(ISerializer jsonSerializer, AWSCredentials credentials, string connectionString)
+        public SnsTopicNotificationBroadcaster(ISerializer jsonSerializer, AWSCredentials credentials, string connectionString)
         {
             if (jsonSerializer == null) throw new ArgumentNullException("credentials");
             JsonSerializer = jsonSerializer;
@@ -19,13 +19,15 @@ namespace Touch.Notification
             _credentials = credentials;
 
             if (string.IsNullOrEmpty(connectionString)) throw new ArgumentException("connectionString");
-            Config = new SnsBroadcasterConnectionStringBuilder { ConnectionString = connectionString };
+            Config = new SnsConnectionStringBuilder { ConnectionString = connectionString };
+
+            if (string.IsNullOrWhiteSpace(Config.Topic)) throw new ArgumentException("Missing TopicArn", "connectionString");
         }
         #endregion
 
         #region Data
         protected readonly ISerializer JsonSerializer;
-        protected readonly SnsBroadcasterConnectionStringBuilder Config;
+        protected readonly SnsConnectionStringBuilder Config;
 
         private readonly AWSCredentials _credentials;
         #endregion

@@ -35,6 +35,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,10 +47,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SnsBroadcasterConnectionStringBuilder.cs" />
-    <Compile Include="SnsDispatcherConnectionStringBuilder.cs" />
-    <Compile Include="SnsNotificationBroadcaster.cs" />
-    <Compile Include="SnsNotificationDispatcher.cs" />
+    <Compile Include="SnsTopicNotificationDispatcher.cs" />
+    <Compile Include="SnsConnectionStringBuilder.cs" />
+    <Compile Include="SnsTopicNotificationBroadcaster.cs" />
+    <Compile Include="SnsApplicationNotificationDispatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

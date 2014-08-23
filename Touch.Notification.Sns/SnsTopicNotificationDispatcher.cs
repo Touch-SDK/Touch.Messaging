@@ -7,11 +7,11 @@ using Touch.Serialization;
 
 namespace Touch.Notification
 {
-    public class SnsNotificationDispatcher<T> : INotificationDispatcher<T>
+    public class SnsTopicNotificationDispatcher<T> : INotificationDispatcher<T>
         where T : class, new()
     {
         #region .ctor
-        public SnsNotificationDispatcher(ISerializer jsonSerializer, AWSCredentials credentials, string connectionString)
+        public SnsTopicNotificationDispatcher(ISerializer jsonSerializer, AWSCredentials credentials, string connectionString)
         {
             if (jsonSerializer == null) throw new ArgumentNullException("credentials");
             JsonSerializer = jsonSerializer;
@@ -20,13 +20,15 @@ namespace Touch.Notification
             _credentials = credentials;
 
             if (string.IsNullOrEmpty(connectionString)) throw new ArgumentException("connectionString");
-            Config = new SnsDispatcherConnectionStringBuilder { ConnectionString = connectionString };
+            Config = new SnsConnectionStringBuilder { ConnectionString = connectionString };
+
+            if (string.IsNullOrWhiteSpace(Config.Topic)) throw new ArgumentException("Missing TopicArn", "connectionString");
         }
         #endregion
 
         #region Data
         protected readonly ISerializer JsonSerializer;
-        protected readonly SnsDispatcherConnectionStringBuilder Config;
+        protected readonly SnsConnectionStringBuilder Config;
 
         private readonly AWSCredentials _credentials;
         private readonly object _lock = new object();
@@ -47,31 +49,24 @@ namespace Touch.Notification
                 {
                     if (!_arnMap.ContainsKey(recipient))
                     {
-                        var response = client.ListEndpointsByPlatformApplication(new ListEndpointsByPlatformApplicationRequest
-                        {
-                            PlatformApplicationArn = Config.Application
-                        });
+                        var response = client.ListTopics();
 
-                        foreach (var endpoint in response.Endpoints)
-                            _arnMap[endpoint.Attributes["Token"]] = endpoint.EndpointArn;
+                        foreach (var topic in response.Topics)
+                        {
+                            var i = topic.TopicArn.LastIndexOf(':') + 1;
+                            var name = topic.TopicArn.Substring(i);
+                            _arnMap[name] = topic.TopicArn;
+                        }
                     }
 
                     if (!_arnMap.ContainsKey(recipient))
-                    {
-                        var response = client.CreatePlatformEndpoint(new CreatePlatformEndpointRequest
-                        {
-                            PlatformApplicationArn = Config.Application,
-                            Token = recipient
-                        });
-
-                        _arnMap[recipient] = response.EndpointArn;
-                    }
+                        throw new ArgumentException("Topic not found: " + recipient, "recipient");
 
                     client.Publish(new PublishRequest
                     {
                         Message = CreateMessage(notification),
                         MessageStructure = "json",
-                        TargetArn = _arnMap[recipient]
+                        TopicArn = _arnMap[recipient]
                     });
                 }
             }
