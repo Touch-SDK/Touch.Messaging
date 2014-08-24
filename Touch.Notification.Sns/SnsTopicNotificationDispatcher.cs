@@ -21,8 +21,6 @@ namespace Touch.Notification
 
             if (string.IsNullOrEmpty(connectionString)) throw new ArgumentException("connectionString");
             Config = new SnsConnectionStringBuilder { ConnectionString = connectionString };
-
-            if (string.IsNullOrWhiteSpace(Config.Topic)) throw new ArgumentException("Missing TopicArn", "connectionString");
         }
         #endregion
 
