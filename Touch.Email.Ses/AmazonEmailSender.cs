@@ -34,15 +34,20 @@ namespace Touch.Email
             var destination = new Destination { ToAddresses = message.Recipients.ToList() };
 
             var subject = new Content(message.Subject);
-            var body = new Body(new Content(message.Body));
-
+            var body = new Body { Html = new Content(message.Body) };
+            
             var email = new Message(subject, body);
+
+            var source = _config.SenderAddress;
+
+            if (!string.IsNullOrWhiteSpace(_config.SenderName))
+                source = _config.SenderName + " <" + source + ">";
 
             var request = new SendEmailRequest
             {
                 Destination = destination,
                 Message = email,
-                Source = _config.SenderAddress
+                Source = source
             };
 
             using (var client = AWSClientFactory.CreateAmazonSimpleEmailServiceClient(_credentials, _config.Region))

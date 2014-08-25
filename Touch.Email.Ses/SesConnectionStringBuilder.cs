@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.Common;
 using Amazon;
 
 namespace Touch.Email
@@ -14,6 +9,12 @@ namespace Touch.Email
         {
             get { return ContainsKey("SenderAddress") ? this["SenderAddress"] as string : null; }
             set { this["SenderAddress"] = value; }
+        }
+
+        public string SenderName
+        {
+            get { return ContainsKey("SenderName") ? this["SenderName"] as string : null; }
+            set { this["SenderName"] = value; }
         }
 
         public RegionEndpoint Region
