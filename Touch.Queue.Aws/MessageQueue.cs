@@ -1,57 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using Amazon;
+using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Touch.Serialization;
 
 namespace Touch.Queue
 {
-    internal sealed class MessageQueue<T> : IMessageQueue<T>
-        where T : class, IMessage, new()
+    public sealed class MessageQueue<T> : IMessageQueue<T>
+        where T : class, new()
     {
         #region .ctor
-        public MessageQueue(ISerializer serializer, Func<IAmazonSQS> clientFactory, string queueUrl)
+        public MessageQueue(ISerializer serializer, AWSCredentials credentials, string connectionString)
         {
             if (serializer == null) throw new ArgumentNullException("serializer");
             _serializer = serializer;
 
-            if (clientFactory == null) throw new ArgumentNullException("clientFactory");
-            _clientFactory = clientFactory;
+            if (credentials == null) throw new ArgumentNullException("credentials");
+            _credentials = credentials;
 
-            if (string.IsNullOrEmpty(queueUrl)) throw new ArgumentNullException("queueUrl");
-            _queueUrl = queueUrl;
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentException("connectionString");
+            _config = new SqsConnectionStringBuilder { ConnectionString = connectionString };
         }
         #endregion
 
         #region Data
         private readonly ISerializer _serializer;
-        private readonly Func<IAmazonSQS> _clientFactory;
-        private readonly string _queueUrl;
+        private readonly AWSCredentials _credentials;
+        private readonly SqsConnectionStringBuilder _config;
         #endregion
 
         #region Private methods
-        /// <summary>
-        /// Get SQS client instance.
-        /// </summary>
-        /// <returns></returns>
-        private IAmazonSQS GetClient() { return _clientFactory.Invoke(); }
+        private IAmazonSQS GetClient() { return AWSClientFactory.CreateAmazonSQSClient(_credentials, _config.Region); }
 
-        /// <summary>
-        /// Load new messages from the queue.
-        /// </summary>
-        /// <param name="take">Number of messages to load.</param>
-        /// <param name="visibilityTimeout">Visibility timeout.</param>
-        /// <returns>Queue of new messages.</returns>
-        private IEnumerable<IQueueItem<T>> LoadNewMessages(int take, TimeSpan visibilityTimeout)
+        private IEnumerable<IQueueItem<T>> LoadNewMessages(int take)
         {
             using (var client = GetClient())
             {
                 var request = new ReceiveMessageRequest
                 {
                     MaxNumberOfMessages = take,
-                    QueueUrl = _queueUrl,
-                    VisibilityTimeout = Convert.ToInt32(visibilityTimeout.TotalSeconds)
+                    QueueUrl = _config.QueueUrl
                 };
                 
                 var response = client.ReceiveMessage(request);
@@ -61,7 +51,6 @@ namespace Touch.Queue
                 foreach (var rawMessage in response.Messages)
                 {
                     var item = ParseMessage(rawMessage);
-                    item.ExpirationTime = DateTime.UtcNow.Add(visibilityTimeout);
                     queue.Enqueue(item);
                 }
 
@@ -96,7 +85,7 @@ namespace Touch.Queue
 
                 var request = new SendMessageRequest
                 {
-                    QueueUrl = _queueUrl,
+                    QueueUrl = _config.QueueUrl,
                     MessageBody = body
                 };
 
@@ -104,10 +93,9 @@ namespace Touch.Queue
             }
         }
 
-        public IEnumerable<IQueueItem<T>> Dequeue(uint take, TimeSpan visibilityTimeout)
+        public IEnumerable<IQueueItem<T>> Dequeue(uint take)
         {
-            var data = LoadNewMessages((int)take, visibilityTimeout);
-            return data.Where(item => item.ExpirationTime > DateTime.UtcNow);
+            return LoadNewMessages((int)take);
         }
 
         public void DeleteMessage(IQueueItem<T> message)
@@ -116,7 +104,7 @@ namespace Touch.Queue
             {
                 var request = new DeleteMessageRequest
                 {
-                    QueueUrl = _queueUrl,
+                    QueueUrl = _config.QueueUrl,
                     ReceiptHandle = message.Receipt
                 };
 

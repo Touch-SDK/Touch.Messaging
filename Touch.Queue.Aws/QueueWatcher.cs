@@ -8,30 +8,8 @@ namespace Touch.Queue
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class QueueWatcher<T> : IQueueWatcher<T>
-        where T : class, IMessage, new()
+        where T : class, new()
     {
-        #region Data
-        /// <summary>
-        /// Queue polling interval.
-        /// </summary>
-        private readonly TimeSpan _pollInterval;
-
-        /// <summary>
-        /// New notification handler.
-        /// </summary>
-        private HandleNewQueueItem<T> _handler;
-
-        /// <summary>
-        /// Queue to watch.
-        /// </summary>
-        private IMessageQueue<T> _queue;
-
-        /// <summary>
-        /// Polling timer.
-        /// </summary>
-        private readonly Timer _timer;
-        #endregion;
-
         #region .ctor
         public QueueWatcher()
             : this(TimeSpan.FromMilliseconds(1000))
@@ -47,11 +25,31 @@ namespace Touch.Queue
             if (Math.Abs(pollInterval.TotalMilliseconds - 0) < 1)
                 throw new ArgumentException("Invalid interval.", "pollInterval");
 
-            _pollInterval = pollInterval;
-
-            _timer = new Timer(_pollInterval.TotalMilliseconds);
+            _timer = new Timer(pollInterval.TotalMilliseconds);
             _timer.Elapsed += OnTimedEvent;
         }
+        #endregion;
+
+        #region Data
+        /// <summary>
+        /// New notification handler.
+        /// </summary>
+        private HandleNewQueueItem<T> _handler;
+
+        /// <summary>
+        /// Queue to watch.
+        /// </summary>
+        private IMessageQueue<T> _queue;
+
+        /// <summary>
+        /// Polling timer.
+        /// </summary>
+        private readonly Timer _timer;
+
+        /// <summary>
+        /// Number of messages to dequeue.
+        /// </summary>
+        private const int DequeueCount = 5;
         #endregion;
 
         #region IQueueWatcher implementation
@@ -99,9 +97,7 @@ namespace Touch.Queue
         #region Private methods
         private void CheckQueue()
         {
-            Console.WriteLine("Checking for new messages...");
-
-            var messages = _queue.Dequeue(1, new TimeSpan(0, 0, 0, 15));
+            var messages = _queue.Dequeue(DequeueCount);
 
             foreach (var notification in messages)
             {

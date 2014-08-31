@@ -2,14 +2,14 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>Touch.Queue.Aws</id>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
         <authors>Artem Abashev</authors>
         <projectUrl>https://github.com/Touch-SDK/Touch.Messaging</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Amazon SQS-based queues for Touch SDK.</description>
         <dependencies>
-            <dependency id="Touch" version="1.0.0" />
-            <dependency id="AWSSDK" version="2.1.4.0" />
+            <dependency id="Touch" version="1.0.14" />
+            <dependency id="AWSSDK" version="2.2.4.0" />
         </dependencies>
     </metadata>
     <files>
