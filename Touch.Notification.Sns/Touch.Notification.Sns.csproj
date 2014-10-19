@@ -41,8 +41,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Touch">
-      <HintPath>..\packages\Touch.1.0.13\lib\Touch.dll</HintPath>
+    <Reference Include="Touch, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Touch.1.0.14\lib\Touch.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
