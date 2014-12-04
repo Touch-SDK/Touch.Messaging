@@ -2,14 +2,14 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>Touch.Notification.Sns</id>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
         <authors>Artem Abashev</authors>
         <projectUrl>https://github.com/Touch-SDK/Touch.Messaging</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Amazon SNS-based notification support for Touch SDK.</description>
         <dependencies>
-            <dependency id="AWSSDK" version="2.2.4.0" />
-            <dependency id="Touch" version="1.0.13" />
+            <dependency id="Touch" version="1.0.22" />
+            <dependency id="AWSSDK" version="2.3.10.0" />
         </dependencies>
     </metadata>
     <files>

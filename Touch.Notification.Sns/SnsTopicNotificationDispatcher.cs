@@ -34,19 +34,36 @@ namespace Touch.Notification
         #endregion
 
         #region INotificationDispatcher members
+        public void Register(string recipient)
+        {
+            if (string.IsNullOrEmpty(recipient)) throw new ArgumentException("recipient");
+
+            using (var client = AWSClientFactory.CreateAmazonSimpleNotificationServiceClient(_credentials, Config.Region))
+            {
+                var response = client.CreateTopic(recipient);
+
+                lock (_lock)
+                {
+                    _arnMap[recipient] = response.TopicArn;
+                }
+            }
+        }
+
         public void Dispatch(string recipient, T notification)
         {
             if (string.IsNullOrEmpty(recipient)) throw new ArgumentException("recipient");
-            if (notification == null) throw new ArgumentNullException("notification");
+            if (notification == null) throw new ArgumentNullException("notification");    
 
-            lock (_lock)
+            using (var client = AWSClientFactory.CreateAmazonSimpleNotificationServiceClient(_credentials, Config.Region))
             {
-                _arnMap.Clear();
+                string topicArn;
 
-                using (var client = AWSClientFactory.CreateAmazonSimpleNotificationServiceClient(_credentials, Config.Region))
+                lock (_lock)
                 {
                     if (!_arnMap.ContainsKey(recipient))
                     {
+                        _arnMap.Clear();
+
                         var response = client.ListTopics();
 
                         foreach (var topic in response.Topics)
@@ -55,18 +72,20 @@ namespace Touch.Notification
                             var name = topic.TopicArn.Substring(i);
                             _arnMap[name] = topic.TopicArn;
                         }
+
+                        if (!_arnMap.ContainsKey(recipient))
+                            throw new ArgumentException("Recipient is not registered: " + recipient, "recipient");
                     }
 
-                    if (!_arnMap.ContainsKey(recipient))
-                        throw new ArgumentException("Topic not found: " + recipient, "recipient");
-
-                    client.Publish(new PublishRequest
-                    {
-                        Message = CreateMessage(notification),
-                        MessageStructure = "json",
-                        TopicArn = _arnMap[recipient]
-                    });
+                    topicArn = _arnMap[recipient];
                 }
+
+                client.Publish(new PublishRequest
+                {
+                    Message = CreateMessage(notification),
+                    MessageStructure = "json",
+                    TopicArn = topicArn
+                });
             }
         }
 

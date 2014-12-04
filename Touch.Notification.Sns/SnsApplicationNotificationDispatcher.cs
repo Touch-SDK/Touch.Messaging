@@ -36,19 +36,40 @@ namespace Touch.Notification
         #endregion
 
         #region INotificationDispatcher members
+        public void Register(string recipient)
+        {
+            if (string.IsNullOrEmpty(recipient)) throw new ArgumentException("recipient");
+
+            using (var client = AWSClientFactory.CreateAmazonSimpleNotificationServiceClient(_credentials, Config.Region))
+		    {
+		        var createResponse = client.CreatePlatformEndpoint(new CreatePlatformEndpointRequest
+		        {
+		            PlatformApplicationArn = Config.Application,
+		            Token = recipient
+		        });
+
+                lock (_lock)
+                {
+                    _arnMap[recipient] = createResponse.EndpointArn;
+		        }
+		    }
+        }
+
         public void Dispatch(string recipient, T notification)
         {
             if (string.IsNullOrEmpty(recipient)) throw new ArgumentException("recipient");
             if (notification == null) throw new ArgumentNullException("notification");
 
-            lock (_lock)
+            using (var client = AWSClientFactory.CreateAmazonSimpleNotificationServiceClient(_credentials, Config.Region))
             {
-                _arnMap.Clear();
+                string targetArn;
 
-                using (var client = AWSClientFactory.CreateAmazonSimpleNotificationServiceClient(_credentials, Config.Region))
+                lock (_lock)
                 {
                     if (!_arnMap.ContainsKey(recipient))
                     {
+                        _arnMap.Clear();
+
                         var response = client.ListEndpointsByPlatformApplication(new ListEndpointsByPlatformApplicationRequest
                         {
                             PlatformApplicationArn = Config.Application
@@ -56,26 +77,20 @@ namespace Touch.Notification
 
                         foreach (var endpoint in response.Endpoints)
                             _arnMap[endpoint.Attributes["Token"]] = endpoint.EndpointArn;
+
+                        if (!_arnMap.ContainsKey(recipient))
+                            throw new ArgumentException("Recipient is not registered: " + recipient, "recipient");
                     }
 
-                    if (!_arnMap.ContainsKey(recipient))
-                    {
-                        var response = client.CreatePlatformEndpoint(new CreatePlatformEndpointRequest
-                        {
-                            PlatformApplicationArn = Config.Application,
-                            Token = recipient
-                        });
-
-                        _arnMap[recipient] = response.EndpointArn;
-                    }
-
-                    client.Publish(new PublishRequest
-                    {
-                        Message = CreateMessage(notification),
-                        MessageStructure = "json",
-                        TargetArn = _arnMap[recipient]
-                    });
+                    targetArn = _arnMap[recipient];
                 }
+
+                client.Publish(new PublishRequest
+                {
+                    Message = CreateMessage(notification),
+                    MessageStructure = "json",
+                    TargetArn = targetArn
+                });
             }
         }
 
