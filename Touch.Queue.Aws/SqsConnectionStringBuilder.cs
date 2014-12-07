@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System;
+using System.Data.Common;
 using Amazon;
 
 namespace Touch.Queue
@@ -15,6 +16,12 @@ namespace Touch.Queue
         {
             get { return RegionEndpoint.GetBySystemName(this["Region"] as string); }
             set { this["Region"] = value; }
+        }
+
+        public int WaitTime
+        {
+            get { return ContainsKey("WaitTime") ? Convert.ToInt32(this["WaitTime"]) : 0; }
+            set { this["WaitTime"] = value; }
         }
     }
 }
