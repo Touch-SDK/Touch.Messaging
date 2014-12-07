@@ -41,9 +41,14 @@ namespace Touch.Queue
                 var request = new ReceiveMessageRequest
                 {
                     MaxNumberOfMessages = take,
-                    QueueUrl = _config.QueueUrl,
-                    WaitTimeSeconds = _config.WaitTime
+                    QueueUrl = _config.QueueUrl
                 };
+
+                if (_config.VisibilityTimeout > 0)
+                    request.VisibilityTimeout = _config.VisibilityTimeout;
+
+                if (_config.WaitTime > 0)
+                    request.WaitTimeSeconds = _config.WaitTime;
                 
                 var response = client.ReceiveMessage(request);
 

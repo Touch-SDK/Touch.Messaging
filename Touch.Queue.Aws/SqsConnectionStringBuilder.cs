@@ -23,5 +23,11 @@ namespace Touch.Queue
             get { return ContainsKey("WaitTime") ? Convert.ToInt32(this["WaitTime"]) : 0; }
             set { this["WaitTime"] = value; }
         }
+
+        public int VisibilityTimeout
+        {
+            get { return ContainsKey("VisibilityTimeout") ? Convert.ToInt32(this["VisibilityTimeout"]) : 0; }
+            set { this["VisibilityTimeout"] = value; }
+        }
     }
 }
