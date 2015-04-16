@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Touch.Notification.Kinesis</id>
+        <version>1.0.0</version>
+        <authors>Artem Abashev</authors>
+        <projectUrl>https://github.com/Touch-SDK/Touch.Messaging</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Amazon Kinesis-based notification support for Touch SDK.</description>
+        <dependencies>
+            <dependency id="Touch" version="1.0.23" />
+            <dependency id="AWSSDK" version="2.3.31.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Release\Touch.Notification.Kinesis.dll" target="lib\Touch.Notification.Kinesis.dll" />
+        <file src="bin\Release\Touch.Notification.Kinesis.pdb" target="lib\Touch.Notification.Kinesis.pdb" />
+    </files>
+</package>
