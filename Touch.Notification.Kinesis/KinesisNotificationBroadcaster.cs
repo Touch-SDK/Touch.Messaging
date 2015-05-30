@@ -45,7 +45,7 @@ namespace Touch.Notification
                 {
                     Data = data,
                     StreamName = _config.StreamName,
-                    PartitionKey = _config.PartitionKey
+                    PartitionKey = _config.PartitionKey ?? typeof(T).Name
                 });
             }
         } 

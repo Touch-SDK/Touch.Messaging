@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Notification.Sns", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Notification.Kinesis", "Touch.Notification.Kinesis\Touch.Notification.Kinesis.csproj", "{20115ADE-4A66-40FE-A61F-BA86F5876FC0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch.Notification.Batch", "Touch.Notification.Batch\Touch.Notification.Batch.csproj", "{4058C9C9-197E-4BDD-A4F2-8405DA7C329E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{20115ADE-4A66-40FE-A61F-BA86F5876FC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20115ADE-4A66-40FE-A61F-BA86F5876FC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20115ADE-4A66-40FE-A61F-BA86F5876FC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4058C9C9-197E-4BDD-A4F2-8405DA7C329E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4058C9C9-197E-4BDD-A4F2-8405DA7C329E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4058C9C9-197E-4BDD-A4F2-8405DA7C329E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4058C9C9-197E-4BDD-A4F2-8405DA7C329E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
